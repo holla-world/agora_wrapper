@@ -59,6 +59,7 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        main.jniLibs.srcDirs += 'src/main/jniLibs'
         test.java.srcDirs += 'src/test/kotlin'
     }
 
@@ -81,10 +82,12 @@ android {
     }
 
     dependencies {
+        api fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
         implementation 'androidx.annotation:annotation:1.2.0'
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+        implementation "com.google.code.gson:gson:2.8.8"
 
         // 解决编译找不到flutter sdk中类文件问题
         compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")

@@ -34,6 +34,38 @@ class MockAgoraWrapperPlatform
     // TODO: implement unregisterVideoFrameObserver
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> exitRtm() {
+    // TODO: implement exitRtm
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> joinRtmChannel(String roomId) {
+    // TODO: implement joinRtmChannel
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> leaveRtmChannel() {
+    // TODO: implement leaveRtmChannel
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendMessageChannel(String json) {
+    // TODO: implement sendMessageChannel
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> loginRtm() {
+    // TODO: implement loginRtm
+    throw UnimplementedError();
+  }
+
+
 }
 
 void main() {

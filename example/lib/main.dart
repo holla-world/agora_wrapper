@@ -2,11 +2,14 @@ import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_wrapper/agora_wrapper.dart';
+import 'package:agora_wrapper/rtm_manager.dart';
 import 'package:agora_wrapper_example/config/agora.config.dart' as config;
+import 'package:faceunity_ui_flutter/faceunity_ui_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:faceunity_ui_flutter/faceunity_ui_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'config/agora.config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,6 +32,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    AgoraWrapper.login(
+      uid,
+      '006ffb87a687ad844748b597ce8d321ebefIABXGODnGkl5C8NsFgVaVvukN3DAlGjGYswHnra8UmKzjEJsygMAAAAAEADhEAAAhyoeZgEA6APMgR1m',
+      appId,
+    );
     _initEngine();
     _agoraWrapper = AgoraWrapper();
   }
@@ -140,7 +148,17 @@ class _MyAppState extends State<MyApp> {
             // FaceunityUI(
             //   cameraCallback: () => engine.switchCamera(),
             // )
-            const FaceunityUI()
+            const FaceunityUI(),
+            Positioned(
+              bottom: 100,
+              height: 50,
+              child: TextButton(
+                onPressed: () {
+                  RtmManager.instance.wrapper.joinRtmChannel(channelId);
+                },
+                child: const Text('join rtm'),
+              ),
+            ),
           ],
         ),
       ),

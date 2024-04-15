@@ -28,18 +28,46 @@ abstract class AgoraWrapperPlatform extends PlatformInterface {
   }
 
   Future<void> registerAudioFrameObserver(int engineHandle) {
-    throw UnimplementedError('registerAudioFrameObserver() has not been implemented.');
+    throw UnimplementedError(
+        'registerAudioFrameObserver() has not been implemented.');
   }
 
   Future<void> unregisterAudioFrameObserver() {
-    throw UnimplementedError('unregisterAudioFrameObserver() has not been implemented.');
+    throw UnimplementedError(
+        'unregisterAudioFrameObserver() has not been implemented.');
   }
 
   Future<void> registerVideoFrameObserver(int engineHandle) {
-    throw UnimplementedError('registerVideoFrameObserver() has not been implemented.');
+    throw UnimplementedError(
+        'registerVideoFrameObserver() has not been implemented.');
   }
 
   Future<void> unregisterVideoFrameObserver() {
-    throw UnimplementedError('unregisterVideoFrameObserver() has not been implemented.');
+    throw UnimplementedError(
+        'unregisterVideoFrameObserver() has not been implemented.');
+  }
+
+  Future<String?> joinRtmChannel(String roomId) {
+    throw UnimplementedError(
+        'unregisterVideoFrameObserver() has not been implemented.');
+  }
+  Future<void> loginRtm() {
+    throw UnimplementedError(
+        'loginRtm() has not been implemented.');
+  }
+
+  Future<void> leaveRtmChannel() {
+    throw UnimplementedError(
+        'unregisterVideoFrameObserver() has not been implemented.');
+  }
+
+  Future<void> exitRtm() {
+    throw UnimplementedError(
+        'unregisterVideoFrameObserver() has not been implemented.');
+  }
+
+  Future<void> sendMessageChannel(String json) {
+    throw UnimplementedError(
+        'unregisterVideoFrameObserver() has not been implemented.');
   }
 }
