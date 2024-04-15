@@ -10,6 +10,30 @@ class MockAgoraWrapperPlatform
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  Future<void> registerAudioFrameObserver(int engineHandle) {
+    // TODO: implement registerAudioFrameObserver
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> registerVideoFrameObserver(int engineHandle) {
+    // TODO: implement registerVideoFrameObserver
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> unregisterAudioFrameObserver() {
+    // TODO: implement unregisterAudioFrameObserver
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> unregisterVideoFrameObserver() {
+    // TODO: implement unregisterVideoFrameObserver
+    throw UnimplementedError();
+  }
 }
 
 void main() {

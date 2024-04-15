@@ -26,4 +26,20 @@ abstract class AgoraWrapperPlatform extends PlatformInterface {
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
+
+  Future<void> registerAudioFrameObserver(int engineHandle) {
+    throw UnimplementedError('registerAudioFrameObserver() has not been implemented.');
+  }
+
+  Future<void> unregisterAudioFrameObserver() {
+    throw UnimplementedError('unregisterAudioFrameObserver() has not been implemented.');
+  }
+
+  Future<void> registerVideoFrameObserver(int engineHandle) {
+    throw UnimplementedError('registerVideoFrameObserver() has not been implemented.');
+  }
+
+  Future<void> unregisterVideoFrameObserver() {
+    throw UnimplementedError('unregisterVideoFrameObserver() has not been implemented.');
+  }
 }

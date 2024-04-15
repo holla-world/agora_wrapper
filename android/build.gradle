@@ -6,6 +6,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://maven.faceunity.com/repository/maven-public/' }
     }
 
     dependencies {
@@ -18,7 +19,23 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://maven.faceunity.com/repository/maven-public/' }
     }
+}
+
+
+//获取local.properties配置文件
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+//获取flutter的sdk路径
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 apply plugin: 'com.android.library'
@@ -47,11 +64,31 @@ android {
 
     defaultConfig {
         minSdkVersion 19
+        externalNativeBuild {
+            cmake {
+                abiFilters 'armeabi-v7a', 'arm64-v8a'
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+    lintOptions {
+        disable 'InvalidPackage'
     }
 
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
+        implementation 'androidx.annotation:annotation:1.2.0'
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+        // 解决编译找不到flutter sdk中类文件问题
+        compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")
+        implementation project(':faceunity_plugin')
     }
 
     testOptions {
@@ -66,3 +103,6 @@ android {
         }
     }
 }
+
+
+

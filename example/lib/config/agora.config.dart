@@ -1,0 +1,4 @@
+const appId = 'ffb87a687ad844748b597ce8d321ebef';
+const token = '004e5cac551b9987df3f9b4033771894fe5eff1e921ffb87a687ad844748b597ce8d321ebef1713167101005be5cb1713210301';
+const channelId = '77110666_10000118_live';
+const uid = 5723003;

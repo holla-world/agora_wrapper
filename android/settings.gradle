@@ -1,1 +1,3 @@
 rootProject.name = 'agora_wrapper'
+include ':faceunity_plugin'
+project(':faceunity_plugin').projectDir = new File('/Users/bezier/FlutterProjects/agora_wrapper/faceunity_ui_flutter/faceunity_plugin/android')

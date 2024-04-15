@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:developer';
 
-import 'package:flutter/services.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_wrapper/agora_wrapper.dart';
+import 'package:agora_wrapper_example/config/agora.config.dart' as config;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:faceunity_ui_flutter/faceunity_ui_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,39 +16,85 @@ class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _agoraWrapperPlugin = AgoraWrapper();
+  late RtcEngine engine;
+  bool startPreview = false, isJoined = false;
+  List<int> remoteUid = [];
+
+  late AgoraWrapper _agoraWrapper;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    _initEngine();
+    _agoraWrapper = AgoraWrapper();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _agoraWrapperPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+  @override
+  void dispose() {
+    super.dispose();
+    _deinitEngine();
+  }
+
+  _initEngine() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      await [Permission.microphone, Permission.camera].request();
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+    engine = createAgoraRtcEngine();
+    await engine.initialize(const RtcEngineContext(
+        appId: config.appId,
+        channelProfile: ChannelProfileType.channelProfileLiveBroadcasting));
 
+    engine.registerEventHandler(RtcEngineEventHandler(
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+      log('onJoinChannelSuccess connection: ${connection.toJson()} elapsed: $elapsed');
+      setState(() {
+        isJoined = true;
+      });
+    }, onUserJoined: (RtcConnection connection, int rUid, int elapsed) {
+      log('onUserJoined connection: ${connection.toJson()} remoteUid: $rUid elapsed: $elapsed');
+      setState(() {
+        remoteUid.add(rUid);
+      });
+    }, onUserOffline:
+            (RtcConnection connection, int rUid, UserOfflineReasonType reason) {
+      log('onUserOffline connection: ${connection.toJson()} remoteUid: $rUid reason: $reason');
+      setState(() {
+        remoteUid.remove(rUid);
+      });
+    }));
+    await engine.enableVideo();
+    await engine.startPreview();
+    await engine.muteLocalAudioStream(true);
+    await engine.muteAllRemoteAudioStreams(true);
     setState(() {
-      _platformVersion = platformVersion;
+      startPreview = true;
     });
+
+    await engine.joinChannel(
+        token: config.token,
+        channelId: config.channelId,
+        uid: config.uid,
+        options: const ChannelMediaOptions(
+            clientRoleType: ClientRoleType.clientRoleBroadcaster));
+    await engine.setRecordingAudioFrameParameters(
+        sampleRate: 48000,
+        channel: 2,
+        mode: RawAudioFrameOpModeType.rawAudioFrameOpModeReadOnly,
+        samplesPerCall: 1024);
+    var handle = await engine.getNativeHandle();
+    await _agoraWrapper.registerAudioFrameObserver(handle);
+    await _agoraWrapper.registerVideoFrameObserver(handle);
+  }
+
+  _deinitEngine() async {
+    await _agoraWrapper.unregisterAudioFrameObserver();
+    await _agoraWrapper.unregisterVideoFrameObserver();
+    await engine.release();
   }
 
   @override
@@ -54,8 +104,44 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Stack(
+          children: [
+            if (startPreview)
+              AgoraVideoView(
+                controller: VideoViewController(
+                  rtcEngine: engine,
+                  canvas: VideoCanvas(uid: 0),
+                ),
+              ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.of(remoteUid.map(
+                    (e) => Container(
+                      width: 120,
+                      height: 120,
+                      child: AgoraVideoView(
+                        controller: VideoViewController.remote(
+                          rtcEngine: engine,
+                          canvas: VideoCanvas(uid: e),
+                          connection: const RtcConnection(
+                            channelId: config.channelId,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )),
+                ),
+              ),
+            ),
+            //传camera 回调显示 UI，不传不显示
+            // FaceunityUI(
+            //   cameraCallback: () => engine.switchCamera(),
+            // )
+            const FaceunityUI()
+          ],
         ),
       ),
     );
