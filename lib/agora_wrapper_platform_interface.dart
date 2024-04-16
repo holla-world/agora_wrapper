@@ -47,6 +47,10 @@ abstract class AgoraWrapperPlatform extends PlatformInterface {
         'unregisterVideoFrameObserver() has not been implemented.');
   }
 
+  /// 原生返回
+  /// 加入频道成功返回：{"result":true,"roomId":"$roomId"}
+  /// 加入频道失败返回：{"result":false,"error":"$errorMsg"}
+  ///
   Future<String?> joinRtmChannel(String roomId) {
     throw UnimplementedError(
         'unregisterVideoFrameObserver() has not been implemented.');

@@ -6,7 +6,7 @@ class AgoraWrapper {
   static String? appId;
 
   /// 用户登录成功后从业务接口获取
-  static void login(num uid, String rtmToken,String appId) {
+  static void login(num uid, String rtmToken, String appId) {
     AgoraWrapper.uid = uid;
     AgoraWrapper.rtmToken = rtmToken;
     AgoraWrapper.appId = appId;
@@ -47,6 +47,10 @@ class AgoraWrapper {
     return AgoraWrapperPlatform.instance.leaveRtmChannel();
   }
 
+  /// 原生返回
+  /// 加入频道成功返回：{"result":true,"roomId":"$roomId"}
+  /// 加入频道失败返回：{"result":false,"error":"$errorMsg"}
+  ///
   Future<String?> joinRtmChannel(String roomId) {
     return AgoraWrapperPlatform.instance.joinRtmChannel(roomId);
   }
