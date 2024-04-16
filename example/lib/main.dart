@@ -12,9 +12,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'config/agora.config.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  RtcManager.instance.initEngine(config.appId);
+  RtcManager.instance.init(config.appId);
   runApp(const MyApp());
 }
 
@@ -26,6 +26,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   bool startPreview = false, isJoined = false;
   List<int> remoteUid = [];
 
@@ -84,13 +85,14 @@ class _MyAppState extends State<MyApp> {
 
     log('[$runtimeType]=>joinChannel ,token=${config.token},channelId=${config.channelId},uid=${config.uid}');
     await RtcManager.instance.joinChannel(
-        token: config.token,
-        channelId: config.channelId,
-        uid: config.uid,
-        options: const ChannelMediaOptions(
-            clientRoleType: ClientRoleType.clientRoleBroadcaster));
+      token: config.token,
+      channelId: config.channelId,
+      uid: config.uid,
+      options: const ChannelMediaOptions(
+          clientRoleType: ClientRoleType.clientRoleBroadcaster),
+    );
 
-    await RtcManager.instance.registerFrameObserver();
+    RtcManager.instance.registerFrameObserver();
   }
 
   _deinitEngine() async {

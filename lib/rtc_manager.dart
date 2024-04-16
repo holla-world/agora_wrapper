@@ -12,6 +12,8 @@ class RtcManager {
   /// Currently, the Agora RTC SDK v6.x supports creating only one RtcEngine object for each app.
   RtcEngine globalEngine = createAgoraRtcEngine();
 
+  String? appId;
+
   RtcManager._privateConstructor() {
     wrapper = AgoraWrapper();
   }
@@ -21,14 +23,19 @@ class RtcManager {
   static RtcManager get instance => _instance;
 
   /// 必须在WidgetsFlutterBinding.ensureInitialized();之后执行
-  void initEngine(String appId) async {
+  void init(String appId) {
+    this.appId = appId;
+  }
+
+  /// 必须保证globalEngine.initialize执行完成后再调用RtcEngine的api
+  Future<void> initRtc(RtcEngineEventHandler handler) async {
+    if (appId == null) {
+      throw Exception('RtcManager未初始化=>[void init(String appId)方法未执行]');
+    }
     await globalEngine.initialize(RtcEngineContext(
       appId: appId,
       channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
     ));
-  }
-
-  Future<void> initRtc(RtcEngineEventHandler handler) async {
     globalEngine.registerEventHandler(handler);
     await globalEngine.enableVideo();
     await globalEngine.startPreview();
@@ -53,10 +60,11 @@ class RtcManager {
 
   Future<void> registerFrameObserver() async {
     await globalEngine.setRecordingAudioFrameParameters(
-        sampleRate: 48000,
-        channel: 2,
-        mode: RawAudioFrameOpModeType.rawAudioFrameOpModeReadOnly,
-        samplesPerCall: 1024);
+      sampleRate: 48000,
+      channel: 2,
+      mode: RawAudioFrameOpModeType.rawAudioFrameOpModeReadOnly,
+      samplesPerCall: 1024,
+    );
     var handle = await globalEngine.getNativeHandle();
     await wrapper.registerAudioFrameObserver(handle);
     await wrapper.registerVideoFrameObserver(handle);
