@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_wrapper/agora_wrapper.dart';
+import 'package:agora_wrapper/rtc_manager.dart';
 import 'package:agora_wrapper/rtm_manager.dart';
 import 'package:agora_wrapper_example/config/agora.config.dart' as config;
 import 'package:faceunity_ui_flutter/faceunity_ui_flutter.dart';
@@ -11,7 +12,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'config/agora.config.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  RtcManager.instance.initEngine(config.appId);
   runApp(const MyApp());
 }
 
@@ -23,11 +26,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late RtcEngine engine;
   bool startPreview = false, isJoined = false;
   List<int> remoteUid = [];
-
-  late AgoraWrapper _agoraWrapper;
 
   @override
   void initState() {
@@ -38,7 +38,6 @@ class _MyAppState extends State<MyApp> {
       config.appId,
     );
     _initEngine();
-    _agoraWrapper = AgoraWrapper();
     // 加入rtm
     RtmManager.instance.wrapper.joinRtmChannel(channelId);
   }
@@ -54,60 +53,48 @@ class _MyAppState extends State<MyApp> {
       await [Permission.microphone, Permission.camera].request();
     }
 
-    engine = createAgoraRtcEngine();
-    await engine.initialize(const RtcEngineContext(
-        appId: config.appId,
-        channelProfile: ChannelProfileType.channelProfileLiveBroadcasting));
-
-    engine.registerEventHandler(
-      RtcEngineEventHandler(onJoinChannelSuccess:
-          (RtcConnection connection, int elapsed) {
+    var rtcEngineEventHandler = RtcEngineEventHandler(
+      onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
         log('[$runtimeType]=>onJoinChannelSuccess connection: ${connection.toJson()} elapsed: $elapsed');
         setState(() {
           isJoined = true;
         });
-      }, onUserJoined: (RtcConnection connection, int rUid, int elapsed) {
+      },
+      onUserJoined: (RtcConnection connection, int rUid, int elapsed) {
         log('[$runtimeType]=>onUserJoined connection: ${connection.toJson()} remoteUid: $rUid elapsed: $elapsed');
         setState(() {
           remoteUid.add(rUid);
         });
-      }, onUserOffline:
+      },
+      onUserOffline:
           (RtcConnection connection, int rUid, UserOfflineReasonType reason) {
         log('[$runtimeType]=>onUserOffline connection: ${connection.toJson()} remoteUid: $rUid reason: $reason');
         setState(() {
           remoteUid.remove(rUid);
         });
-      }),
+      },
+      onError: (error, msg) {
+        log('[$runtimeType]=>joinChannelError,msg=$msg,error=$error');
+      },
     );
-    await engine.enableVideo();
-    await engine.startPreview();
-    await engine.muteLocalAudioStream(true);
-    await engine.muteAllRemoteAudioStreams(true);
+    await RtcManager.instance.initRtc(rtcEngineEventHandler);
     setState(() {
       startPreview = true;
     });
 
     log('[$runtimeType]=>joinChannel ,token=${config.token},channelId=${config.channelId},uid=${config.uid}');
-    await engine.joinChannel(
+    await RtcManager.instance.joinChannel(
         token: config.token,
         channelId: config.channelId,
         uid: config.uid,
         options: const ChannelMediaOptions(
             clientRoleType: ClientRoleType.clientRoleBroadcaster));
-    await engine.setRecordingAudioFrameParameters(
-        sampleRate: 48000,
-        channel: 2,
-        mode: RawAudioFrameOpModeType.rawAudioFrameOpModeReadOnly,
-        samplesPerCall: 1024);
-    var handle = await engine.getNativeHandle();
-    await _agoraWrapper.registerAudioFrameObserver(handle);
-    await _agoraWrapper.registerVideoFrameObserver(handle);
+
+    await RtcManager.instance.registerFrameObserver();
   }
 
   _deinitEngine() async {
-    await _agoraWrapper.unregisterAudioFrameObserver();
-    await _agoraWrapper.unregisterVideoFrameObserver();
-    await engine.release();
+    RtcManager.instance.unRegisterFrameObserver();
   }
 
   @override
@@ -122,7 +109,7 @@ class _MyAppState extends State<MyApp> {
             if (startPreview)
               AgoraVideoView(
                 controller: VideoViewController(
-                  rtcEngine: engine,
+                  rtcEngine: RtcManager.instance.globalEngine,
                   canvas: const VideoCanvas(uid: 0),
                 ),
               ),
@@ -137,7 +124,7 @@ class _MyAppState extends State<MyApp> {
                       height: 120,
                       child: AgoraVideoView(
                         controller: VideoViewController.remote(
-                          rtcEngine: engine,
+                          rtcEngine: RtcManager.instance.globalEngine,
                           canvas: VideoCanvas(uid: e),
                           connection: const RtcConnection(
                             channelId: config.channelId,
