@@ -5,6 +5,7 @@ PODS:
     - Flutter
   - agora_wrapper (0.0.1):
     - AgoraRtcEngine_iOS
+    - AgoraRtm_iOS
     - Flutter
     - FURenderKit (= 8.8.1)
   - AgoraIrisRTC_iOS (4.2.2-build.1)
@@ -37,6 +38,7 @@ PODS:
   - AgoraRtcEngine_iOS/VideoCodecEnc (4.2.2)
   - AgoraRtcEngine_iOS/VirtualBackground (4.2.2)
   - AgoraRtcEngine_iOS/VQA (4.2.2)
+  - AgoraRtm_iOS (2.1.10)
   - faceunity_plugin (0.0.1):
     - Flutter
     - FURenderKit (= 8.8.1)
@@ -67,6 +69,7 @@ SPEC REPOS:
   trunk:
     - AgoraIrisRTC_iOS
     - AgoraRtcEngine_iOS
+    - AgoraRtm_iOS
     - FURenderKit
     - Toast
 
@@ -90,9 +93,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   agora_rtc_engine: 667a7de14f35858a31b0c64cd54042a2158ef198
-  agora_wrapper: ae24c1b254851c6e87c1bf16af3a2758093643d3
+  agora_wrapper: a55f432d561cd147f4ae9cd9676592836218773d
   AgoraIrisRTC_iOS: 7e71322c06db6c29ceaf89a964fb8b2700a75001
   AgoraRtcEngine_iOS: c510de329cd905daff3f01fa4c872ea6d5eaee23
+  AgoraRtm_iOS: b53a57502a35349aceea890df4416b483ea4153c
   faceunity_plugin: 455a46106881512d97b55c4ff7ee7864dbaa8880
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   fluttertoast: d410097af3a920745c7bb589f26967c6d35f92c0
