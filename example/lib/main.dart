@@ -33,12 +33,14 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     AgoraWrapper.login(
-      uid,
-      '006ffb87a687ad844748b597ce8d321ebefIABXGODnGkl5C8NsFgVaVvukN3DAlGjGYswHnra8UmKzjEJsygMAAAAAEADhEAAAhyoeZgEA6APMgR1m',
-      appId,
+      config.uid,
+      config.rtmToken,
+      config.appId,
     );
     _initEngine();
     _agoraWrapper = AgoraWrapper();
+    // 加入rtm
+    RtmManager.instance.wrapper.joinRtmChannel(channelId);
   }
 
   @override
@@ -57,24 +59,26 @@ class _MyAppState extends State<MyApp> {
         appId: config.appId,
         channelProfile: ChannelProfileType.channelProfileLiveBroadcasting));
 
-    engine.registerEventHandler(RtcEngineEventHandler(
-        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
-      log('onJoinChannelSuccess connection: ${connection.toJson()} elapsed: $elapsed');
-      setState(() {
-        isJoined = true;
-      });
-    }, onUserJoined: (RtcConnection connection, int rUid, int elapsed) {
-      log('onUserJoined connection: ${connection.toJson()} remoteUid: $rUid elapsed: $elapsed');
-      setState(() {
-        remoteUid.add(rUid);
-      });
-    }, onUserOffline:
-            (RtcConnection connection, int rUid, UserOfflineReasonType reason) {
-      log('onUserOffline connection: ${connection.toJson()} remoteUid: $rUid reason: $reason');
-      setState(() {
-        remoteUid.remove(rUid);
-      });
-    }));
+    engine.registerEventHandler(
+      RtcEngineEventHandler(onJoinChannelSuccess:
+          (RtcConnection connection, int elapsed) {
+        log('[$runtimeType]=>onJoinChannelSuccess connection: ${connection.toJson()} elapsed: $elapsed');
+        setState(() {
+          isJoined = true;
+        });
+      }, onUserJoined: (RtcConnection connection, int rUid, int elapsed) {
+        log('[$runtimeType]=>onUserJoined connection: ${connection.toJson()} remoteUid: $rUid elapsed: $elapsed');
+        setState(() {
+          remoteUid.add(rUid);
+        });
+      }, onUserOffline:
+          (RtcConnection connection, int rUid, UserOfflineReasonType reason) {
+        log('[$runtimeType]=>onUserOffline connection: ${connection.toJson()} remoteUid: $rUid reason: $reason');
+        setState(() {
+          remoteUid.remove(rUid);
+        });
+      }),
+    );
     await engine.enableVideo();
     await engine.startPreview();
     await engine.muteLocalAudioStream(true);
@@ -83,6 +87,7 @@ class _MyAppState extends State<MyApp> {
       startPreview = true;
     });
 
+    log('[$runtimeType]=>joinChannel ,token=${config.token},channelId=${config.channelId},uid=${config.uid}');
     await engine.joinChannel(
         token: config.token,
         channelId: config.channelId,
@@ -118,7 +123,7 @@ class _MyAppState extends State<MyApp> {
               AgoraVideoView(
                 controller: VideoViewController(
                   rtcEngine: engine,
-                  canvas: VideoCanvas(uid: 0),
+                  canvas: const VideoCanvas(uid: 0),
                 ),
               ),
             Align(
@@ -127,7 +132,7 @@ class _MyAppState extends State<MyApp> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: List.of(remoteUid.map(
-                    (e) => Container(
+                    (e) => SizedBox(
                       width: 120,
                       height: 120,
                       child: AgoraVideoView(
@@ -148,17 +153,7 @@ class _MyAppState extends State<MyApp> {
             // FaceunityUI(
             //   cameraCallback: () => engine.switchCamera(),
             // )
-            const FaceunityUI(),
-            Positioned(
-              bottom: 100,
-              height: 50,
-              child: TextButton(
-                onPressed: () {
-                  RtmManager.instance.wrapper.joinRtmChannel(channelId);
-                },
-                child: const Text('join rtm'),
-              ),
-            ),
+            const FaceunityUI()
           ],
         ),
       ),

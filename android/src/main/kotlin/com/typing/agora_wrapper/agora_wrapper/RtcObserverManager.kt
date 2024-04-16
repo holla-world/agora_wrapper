@@ -29,7 +29,12 @@ import java.util.concurrent.TimeUnit
  * @version 1.0
  * @description:
  */
-class RtcObserverManager(context: Context) {
+class RtcObserverManager() {
+
+    companion object {
+        private const val TAG = "AgoraRtcRawdataPlugin"
+        private const val SKIP_FRAME = 3
+    }
 
     private val TAG = "RtcObserverManager"
 
@@ -38,13 +43,6 @@ class RtcObserverManager(context: Context) {
 
     @Volatile
     private var renderStop = false
-
-    private var context: Context
-
-    init {
-        this.context = context
-
-    }
 
     fun reload() {
         renderStop = false
@@ -94,27 +92,27 @@ class RtcObserverManager(context: Context) {
                     videoObserver =
                         object : IVideoFrameObserver((call.arguments as Number).toLong()) {
                             private var oldRotation = 0
-                            private var skipFrame = AgoraWrapperPlugin.SKIP_FRAME
+                            private var skipFrame = SKIP_FRAME
 
                             override fun onCaptureVideoFrame(
                                 sourceType: Int,
                                 videoFrame: VideoFrame,
                             ): Boolean {
                                 if (!FaceunityKit.isKitInit || renderStop) return false
-//                                Log.d(
-//                                    TAG,
-//                                    "handleMessage: onCaptureVideoFrame: sourceType:$sourceType, rotation:${videoFrame.rotation}, width: ${videoFrame.width}, height: ${videoFrame.height}"
-//                                )
+                                Log.d(
+                                    TAG,
+                                    "handleMessage: onCaptureVideoFrame: sourceType:$sourceType, rotation:${videoFrame.rotation}, width: ${videoFrame.width}, height: ${videoFrame.height}"
+                                )
                                 val countDownLatch = CountDownLatch(1)
                                 var outputData: FURenderOutputData? = null
                                 val startTime = System.currentTimeMillis()
                                 OffLineRenderHandler.getInstance().queueEvent {
                                     if (!FaceunityKit.isKitInit) {
                                         countDownLatch.countDown()
-//                                        Log.d(
-//                                            TAG,
-//                                            "RenderHandler: queueEvent fail: FaceunityKit.isKitInit == ${FaceunityKit.isKitInit}"
-//                                        )
+                                        Log.d(
+                                            TAG,
+                                            "RenderHandler: queueEvent fail: FaceunityKit.isKitInit == ${FaceunityKit.isKitInit}"
+                                        )
                                         return@queueEvent
                                     }
                                     val i420 =
@@ -128,13 +126,13 @@ class RtcObserverManager(context: Context) {
                                     countDownLatch.countDown()
                                 }
                                 countDownLatch.await(2000, TimeUnit.MILLISECONDS)
-//                                Log.d(
-//                                    TAG,
-//                                    "onCaptureVideoFrame: cost ${System.currentTimeMillis() - startTime} ms"
-//                                )
+                                Log.d(
+                                    TAG,
+                                    "onCaptureVideoFrame: cost ${System.currentTimeMillis() - startTime} ms"
+                                )
                                 if (oldRotation != videoFrame.rotation) {
                                     oldRotation = videoFrame.rotation
-                                    skipFrame = AgoraWrapperPlugin.SKIP_FRAME
+                                    skipFrame = SKIP_FRAME
                                 }
                                 if (skipFrame-- < 0) {
                                     updateVideoFrameBuffer(videoFrame, outputData)

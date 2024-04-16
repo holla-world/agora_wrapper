@@ -23,7 +23,7 @@ class AgoraWrapperPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var rtcObserverManager: RtcObserverManager
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "agora_rawdata")
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "agora_rtc_rawdata")
         channel.setMethodCallHandler(this)
 
         val applicationContext = flutterPluginBinding.applicationContext
@@ -40,7 +40,7 @@ class AgoraWrapperPlugin : FlutterPlugin, MethodCallHandler {
             }
         })
         if (!this::rtcObserverManager.isInitialized) {
-            rtcObserverManager = RtcObserverManager(applicationContext)
+            rtcObserverManager = RtcObserverManager()
         } else {
             rtcObserverManager.reload()
         }
@@ -50,10 +50,11 @@ class AgoraWrapperPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         val rtcResolveResult = rtcObserverManager.onMethodCall(call, result)
+        if (rtcResolveResult) return
         val rtmResolveResult = AgoraWrapper.onMethodCall(call, result)
-        if (!rtcResolveResult && !rtmResolveResult) {
-            result.notImplemented()
-        }
+        if (rtmResolveResult) return
+
+        result.notImplemented()
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -68,6 +69,5 @@ class AgoraWrapperPlugin : FlutterPlugin, MethodCallHandler {
         }
 
         const val TAG = "AgoraRawdataPlugin"
-        const val SKIP_FRAME = 3
     }
 }

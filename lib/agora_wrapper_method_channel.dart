@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'agora_wrapper.dart';
@@ -7,7 +6,7 @@ import 'agora_wrapper_platform_interface.dart';
 /// An implementation of [AgoraWrapperPlatform] that uses method channels.
 class MethodChannelAgoraWrapper extends AgoraWrapperPlatform {
   /// The method channel used to interact with the native platform.
-  final methodChannel = const MethodChannel('agora_rawdata');
+  final methodChannel = const MethodChannel('agora_rtc_rawdata');
 
   @override
   Future<String?> getPlatformVersion() async {
@@ -40,7 +39,7 @@ class MethodChannelAgoraWrapper extends AgoraWrapperPlatform {
 
   @override
   Future<void> sendMessageChannel(String json) {
-    return methodChannel.invokeMethod('unregisterVideoFrameObserver');
+    return methodChannel.invokeMethod('sendMessageChannel');
   }
 
   @override

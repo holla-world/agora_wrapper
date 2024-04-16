@@ -18,6 +18,8 @@ import io.flutter.plugin.common.MethodChannel
  * @description:
  */
 object AgoraWrapper {
+    
+    private val TAG ="AgoraWrapper"
 
 
     private var INSTANCE: Application? = null
@@ -81,7 +83,7 @@ object AgoraWrapper {
                         map["result"] = true
                         map["roomId"] = roomId
                         result.success(Gson().toJson(map))
-                        Log.i(AgoraWrapperPlugin.TAG, "成功加入频道${roomId}")
+                        Log.i(TAG, "成功加入频道${roomId}")
                     }
 
                     override fun onFailure(errorInfo: ErrorInfo?) {
@@ -90,7 +92,7 @@ object AgoraWrapper {
                         val error = "joinChannel error=>${errorInfo}"
                         map["error"] = error
                         result.success(Gson().toJson(map))
-                        Log.i(AgoraWrapperPlugin.TAG, "加入频道失败${error}")
+                        Log.i(TAG, "加入频道失败${error}")
                     }
                 })
             }
@@ -109,11 +111,11 @@ object AgoraWrapper {
                 val json = call.argument<String>("json") ?: return false
                 RtmHelper.instance.sendChannelMessage(json, object : ResultCallback<Void> {
                     override fun onSuccess(p0: Void?) {
-                        Log.d(AgoraWrapperPlugin.TAG, "sendMessageChannel success")
+                        Log.d(TAG, "sendMessageChannel success")
                     }
 
                     override fun onFailure(p0: ErrorInfo?) {
-                        Log.d(AgoraWrapperPlugin.TAG, "sendMessageChannel error=>$p0")
+                        Log.d(TAG, "sendMessageChannel error=>$p0")
                     }
                 })
             }

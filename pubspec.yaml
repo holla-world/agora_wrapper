@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  agora_rtc_engine: 6.3.0
+  agora_rtc_engine: 6.2.2
   faceunity_ui_flutter:
     path: faceunity_ui_flutter
 
