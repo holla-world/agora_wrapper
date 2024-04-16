@@ -13,8 +13,10 @@ A new Flutter project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = '**/*.{h,m,mm,swift}'
   s.dependency 'Flutter'
+  s.dependency 'AgoraRtcEngine_iOS'
+  s.dependency 'FURenderKit', '8.8.1'
   s.platform = :ios, '11.0'
 
   # Flutter.framework does not contain a i386 slice.
