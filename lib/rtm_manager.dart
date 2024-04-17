@@ -17,6 +17,7 @@ class RtmManager {
   RtmManager._privateConstructor() {
     // 初始化rtc
     wrapper = AgoraWrapper();
+    print('初始化rtm_receiver_channel');
     messageChannel.setMessageHandler((message) async {
       print('接收rtm消息：message=$message');
       for (var listener in _listeners) {

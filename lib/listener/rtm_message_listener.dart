@@ -4,5 +4,5 @@
 /// @description ()
 abstract class RtmMessageListener {
   /// 订阅rtm消息
-  void onMessageReceived(dynamic message);
+  void onMessageReceived(String message);
 }
