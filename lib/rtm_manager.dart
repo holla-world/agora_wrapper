@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 
 import 'agora_wrapper.dart';
+import 'listener/rtm_message_listener.dart';
 
 /// @author FanXiuMing
 /// @date 2024/4/15 17:19
@@ -41,7 +42,4 @@ class RtmManager {
   }
 }
 
-abstract class RtmMessageListener {
-  /// 订阅rtm消息
-  void onMessageReceived(dynamic message);
-}
+
