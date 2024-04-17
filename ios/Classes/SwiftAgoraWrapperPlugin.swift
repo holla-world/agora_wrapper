@@ -66,9 +66,8 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
             }
             result(nil)
         case "joinRtmChannel":
-            if let arguments = call.arguments as? [String: Any] {
-                let roomId = arguments["roomId"] as? String
-                AgoraRtmUtil.shared.joinRtmChannel(roomId: roomId ?? "") { ret in
+            if let roomId = call.arguments as? String {
+                AgoraRtmUtil.shared.joinRtmChannel(roomId: roomId) { ret in
                     result(ret)
                 }
             } else {
@@ -79,9 +78,8 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
             AgoraRtmUtil.shared.leaveRtmChannel()
             result(nil)
         case "sendMessageChannel":
-            if let arguments = call.arguments as? [String: Any] {
-                let message = arguments["message"] as? String
-                AgoraRtmUtil.shared.sendMessageChannel(message: message ?? "")
+            if let message = call.arguments as? String {
+                AgoraRtmUtil.shared.sendMessageChannel(message: message)
                 result(nil)
             } else {
                 // 处理参数不是预期类型的情况
