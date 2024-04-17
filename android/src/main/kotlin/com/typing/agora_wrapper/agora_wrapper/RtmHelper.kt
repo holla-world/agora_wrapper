@@ -241,15 +241,21 @@ class RtmHelper private constructor() {
                 rtmChannelMember: RtmChannelMember
             ) {
                 super.onMessageReceived(rtmMessage, rtmChannelMember)
-                Log.d("RtmChannelListener", rtmMessage.text)
-                rtmMsgReceiver?.invoke(rtmMessage.text)
+                Log.d(
+                    "RtmChannelListener",
+                    rtmMessage.text + "RtmHelper.instance.rtmMsgReceiver==null?${RtmHelper.instance.rtmMsgReceiver == null}"
+                )
+                RtmHelper.instance.rtmMsgReceiver?.invoke(rtmMessage.text)
             }
         }
     private val mClientListener: RtmClientListenerAdapter = object : RtmClientListenerAdapter() {
         override fun onMessageReceived(rtmMessage: RtmMessage, peerId: String) {
             super.onMessageReceived(rtmMessage, peerId)
-            Log.d("RtmClientListener", rtmMessage.text)
-            rtmMsgReceiver?.invoke(rtmMessage.text)
+            Log.d(
+                "RtmClientListener",
+                rtmMessage.text + "RtmHelper.instance.rtmMsgReceiver==null?${RtmHelper.instance.rtmMsgReceiver == null}"
+            )
+            RtmHelper.instance.rtmMsgReceiver?.invoke(rtmMessage.text)
         }
     }
 
