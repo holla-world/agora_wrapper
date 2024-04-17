@@ -15,9 +15,18 @@ extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 }
 
 public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDelegate, AgoraVideoFrameDelegate {
+    
+    private var messageChannel: FlutterBasicMessageChannel?
+
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "agora_rtc_rawdata", binaryMessenger: registrar.messenger())
         let instance = SwiftAgoraWrapperPlugin()
+         let messageChannel = FlutterBasicMessageChannel(name: "rtm_receiver_channel", binaryMessenger: registrar.messenger(), codec: FlutterStandardMessageCodec.sharedInstance())
+        instance.messageChannel = messageChannel
+        AgoraRtmUtil.shared.messageReceived = { text in
+            messageChannel.sendMessage(text)
+        }
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     

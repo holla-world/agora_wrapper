@@ -19,6 +19,10 @@ class AgoraRtmUtil:NSObject, AgoraRtmDelegate {
     
     var channel:AgoraRtmChannel?
     
+    var messageReceived:((_ message:String) -> Void)?
+    
+    
+    
     private override init() {
     }
     
@@ -66,7 +70,7 @@ extension AgoraRtmUtil: AgoraRtmChannelDelegate {
     ///   - message: message description
     ///   - peerId: peerId description
     func rtmKit(_ kit: AgoraRtmKit, messageReceived message: AgoraRtmMessage, fromPeer peerId: String) {
-        //        receiveRTMMessage(message: message)
+        messageReceived?(message.text)
     }
     
     /// receive group message
@@ -75,7 +79,7 @@ extension AgoraRtmUtil: AgoraRtmChannelDelegate {
     ///   - message: message description
     ///   - member: member description
     func channel(_ channel: AgoraRtmChannel, messageReceived message: AgoraRtmMessage, from member: AgoraRtmMember) {
-        //        receiveRTMMessage(message: message)
+        messageReceived?(message.text)
     }
     
     /// connection state
