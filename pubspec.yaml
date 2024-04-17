@@ -11,9 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
+  provider: ^6.0.5
+  tuple: ^2.0.0
+  json_annotation: ^4.8.1
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1
+  fluttertoast: 8.1.0
   agora_rtc_engine: 6.2.2
-  faceunity_ui_flutter:
-    path: faceunity_ui_flutter
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +46,31 @@ flutter:
         pluginClass: AgoraWrapperPlugin
       ios:
         pluginClass: AgoraWrapperPlugin
+        
+  assets:
+    - lib/faceunity/ui/resource/
+    - lib/faceunity/ui/resource/sticker/
+    - lib/faceunity/ui/resource/sticker/stickers.json
+    - lib/faceunity/ui/resource/sticker/2.0x/
+    - lib/faceunity/ui/resource/sticker/3.0x/
+    - lib/faceunity/ui/resource/skin/
+    - lib/faceunity/ui/resource/skin/2.0x/
+    - lib/faceunity/ui/resource/skin/3.0x/
+    - lib/faceunity/ui/resource/shape/
+    - lib/faceunity/ui/resource/shape/2.0x/
+    - lib/faceunity/ui/resource/shape/3.0x/
+    - lib/faceunity/ui/resource/filter/
+    - lib/faceunity/ui/resource/filter/2.0x/
+    - lib/faceunity/ui/resource/filter/3.0x/
+    - lib/faceunity/ui/resource/makeup/
+    - lib/faceunity/ui/resource/makeup/2.0x/
+    - lib/faceunity/ui/resource/makeup/3.0x/
+    - lib/faceunity/ui/resource/body/
+    - lib/faceunity/ui/resource/body/2.0x/
+    - lib/faceunity/ui/resource/body/3.0x/
+    - lib/faceunity/ui/resource/common/
+    - lib/faceunity/ui/resource/common/2.0x/
+    - lib/faceunity/ui/resource/common/3.0x/
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

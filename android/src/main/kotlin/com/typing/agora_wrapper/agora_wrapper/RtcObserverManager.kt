@@ -1,6 +1,5 @@
 package com.typing.agora_wrapper.agora_wrapper
 
-import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
 import com.faceunity.core.entity.FURenderInputData
@@ -12,7 +11,7 @@ import com.faceunity.core.faceunity.FUAIKit
 import com.faceunity.core.faceunity.FURenderKit
 import com.faceunity.core.faceunity.OffLineRenderHandler
 import com.faceunity.core.model.facebeauty.FaceBeautyBlurTypeEnum
-import com.faceunity.faceunity_plugin.FaceunityKit
+import com.typing.agora_wrapper.agora_wrapper.faceunity_plugin.FaceunityKit
 import io.agora.rtc.rawdata.base.AudioFrame
 import io.agora.rtc.rawdata.base.IAudioFrameObserver
 import io.agora.rtc.rawdata.base.IVideoFrameObserver

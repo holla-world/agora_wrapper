@@ -192,20 +192,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.3.6"
-  faceunity_plugin:
-    dependency: transitive
-    description:
-      path: "../faceunity_ui_flutter/faceunity_plugin"
-      relative: true
-    source: path
-    version: "0.0.1"
-  faceunity_ui_flutter:
-    dependency: "direct main"
-    description:
-      path: "../faceunity_ui_flutter"
-      relative: true
-    source: path
-    version: "0.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -512,10 +498,10 @@ packages:
     dependency: transitive
     description:
       name: provider
-      sha256: "59471e0a4595e264625d3496af567ac85bdae1148ec985aff1e0555786f53ecf"
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.0"
+    version: "6.1.2"
   pub_semver:
     dependency: transitive
     description:
