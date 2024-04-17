@@ -30,8 +30,6 @@ dependencies:
   cupertino_icons: ^1.0.6
   permission_handler: ^8.3.0
   agora_rtc_engine: 6.2.2
-  faceunity_ui_flutter:
-    path: ../faceunity_ui_flutter
 
 dev_dependencies:
   integration_test:

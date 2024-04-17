@@ -2,6 +2,7 @@ package com.typing.agora_wrapper.agora_wrapper
 
 import android.util.Log
 import androidx.annotation.NonNull
+import com.typing.agora_wrapper.agora_wrapper.faceunity_plugin.FaceunityPlugin
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BasicMessageChannel
 import io.flutter.plugin.common.MethodCall
@@ -11,20 +12,21 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.StandardMessageCodec
 
 /** AgoraWrapperPlugin */
-class AgoraWrapperPlugin : FlutterPlugin, MethodCallHandler {
+class AgoraWrapperPlugin : FaceunityPlugin() {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
-    private lateinit var channel: MethodChannel
+    private lateinit var agoraChannel: MethodChannel
     private lateinit var messageChannel: BasicMessageChannel<Any>
 
 
     private lateinit var rtcObserverManager: RtcObserverManager
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "agora_rtc_rawdata")
-        channel.setMethodCallHandler(this)
+        super.onAttachedToEngine(flutterPluginBinding)
+        agoraChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "agora_rtc_rawdata")
+        agoraChannel.setMethodCallHandler(this)
 
         val applicationContext = flutterPluginBinding.applicationContext
         messageChannel = BasicMessageChannel(
@@ -53,12 +55,12 @@ class AgoraWrapperPlugin : FlutterPlugin, MethodCallHandler {
         if (rtcResolveResult) return
         val rtmResolveResult = AgoraWrapper.onMethodCall(call, result)
         if (rtmResolveResult) return
-
-        result.notImplemented()
+        super.onMethodCall(call, result)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
+        super.onDetachedFromEngine(binding)
+        agoraChannel.setMethodCallHandler(null)
         rtcObserverManager.onDetachedFromEngine(binding)
     }
 

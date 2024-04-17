@@ -192,20 +192,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.3.6"
-  faceunity_plugin:
-    dependency: transitive
-    description:
-      path: "../faceunity_ui_flutter/faceunity_plugin"
-      relative: true
-    source: path
-    version: "0.0.1"
-  faceunity_ui_flutter:
-    dependency: "direct main"
-    description:
-      path: "../faceunity_ui_flutter"
-      relative: true
-    source: path
-    version: "0.0.1"
   fake_async:
     dependency: transitive
     description:
