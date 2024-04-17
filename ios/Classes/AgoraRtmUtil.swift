@@ -37,7 +37,7 @@ class AgoraRtmUtil:NSObject, AgoraRtmDelegate {
         self.rtmToken = rtmToken ?? ""
         self.uid = uid ?? ""
         rtm?.login(byToken: self.rtmToken, user: self.uid, completion: { (result) in
-            
+            print("\(result.rawValue)")
         })
     }
     

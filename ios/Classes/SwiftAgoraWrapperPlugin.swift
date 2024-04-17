@@ -17,12 +17,12 @@ extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
 public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDelegate, AgoraVideoFrameDelegate {
     
     private var messageChannel: FlutterBasicMessageChannel?
-
+    
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "agora_rtc_rawdata", binaryMessenger: registrar.messenger())
         let instance = SwiftAgoraWrapperPlugin()
-         let messageChannel = FlutterBasicMessageChannel(name: "rtm_receiver_channel", binaryMessenger: registrar.messenger(), codec: FlutterStandardMessageCodec.sharedInstance())
+        let messageChannel = FlutterBasicMessageChannel(name: "rtm_receiver_channel", binaryMessenger: registrar.messenger(), codec: FlutterStandardMessageCodec.sharedInstance())
         instance.messageChannel = messageChannel
         AgoraRtmUtil.shared.messageReceived = { text in
             messageChannel.sendMessage(text)
@@ -65,34 +65,43 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
             result(nil)
         case "loginRtm":
             if let arguments = call.arguments as? [String: Any] {
-                let appId = arguments["appId"] as? String
+                let appId = arguments["agoraId"] as? String
                 let rtmToken = arguments["rtmToken"] as? String
-                let uid = arguments["uid"] as? String
-                
-                AgoraRtmUtil.shared.loginRtm(appId: appId, rtmToken: rtmToken, uid: uid)
+                let uid = arguments["uid"] as? Int
+                AgoraRtmUtil.shared.loginRtm(appId: appId, rtmToken: rtmToken, uid:"\(uid!)")
             } else {
                 // 处理参数不是预期类型的情况
             }
             result(nil)
         case "joinRtmChannel":
-            if let roomId = call.arguments as? String {
-                AgoraRtmUtil.shared.joinRtmChannel(roomId: roomId) { ret in
-                    result(ret)
+            if let arguments = call.arguments as? [String: Any] {
+                if let roomId = arguments["roomId"] as? String {
+                    AgoraRtmUtil.shared.joinRtmChannel(roomId: roomId) { ret in
+                        result(ret)
+                    }
+                } else {
+                    // 处理参数不是预期类型的情况
+                    result(["result":false,"error":"arguments is error"].toJSONString())
                 }
             } else {
                 // 处理参数不是预期类型的情况
-                result(["result":false,"error":"arguments is error"].toJSONString())
+                result(nil)
             }
         case "leaveRtmChannel":
             AgoraRtmUtil.shared.leaveRtmChannel()
             result(nil)
         case "sendMessageChannel":
-            if let message = call.arguments as? String {
-                AgoraRtmUtil.shared.sendMessageChannel(message: message)
-                result(nil)
+            if let arguments = call.arguments as? [String: Any] {
+                if let message = arguments["message"] as? String {
+                    AgoraRtmUtil.shared.sendMessageChannel(message: message)
+                    result(nil)
+                } else {
+                    // 处理参数不是预期类型的情况
+                    result(["result":false,"error":"arguments is error"].toJSONString())
+                }
             } else {
                 // 处理参数不是预期类型的情况
-                result(["result":false,"error":"arguments is error"].toJSONString())
+                result(nil)
             }
         default:
             result(FlutterMethodNotImplemented)
