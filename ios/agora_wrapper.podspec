@@ -16,7 +16,7 @@ A new Flutter project.
   s.source_files = '**/*.{h,m,mm,swift}'
   s.dependency 'Flutter'
   s.dependency 'AgoraRtcEngine_iOS'
-  s.dependency 'AgoraRtm_iOS'
+  s.dependency 'AgoraRtm_iOS', '1.5.1'
   s.dependency 'FURenderKit', '8.8.1'
   s.platform = :ios, '11.0'
 
