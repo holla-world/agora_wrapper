@@ -243,9 +243,9 @@ class RtmHelper private constructor() {
                 super.onMessageReceived(rtmMessage, rtmChannelMember)
                 Log.d(
                     "RtmChannelListener",
-                    rtmMessage.text + "RtmHelper.instance.rtmMsgReceiver==null?${RtmHelper.instance.rtmMsgReceiver == null}"
+                    rtmMessage.text + "rtmMsgReceiver==null?${rtmMsgReceiver == null}"
                 )
-                RtmHelper.instance.rtmMsgReceiver?.invoke(rtmMessage.text)
+                rtmMsgReceiver?.invoke(rtmMessage.text)
             }
         }
     private val mClientListener: RtmClientListenerAdapter = object : RtmClientListenerAdapter() {
@@ -253,9 +253,9 @@ class RtmHelper private constructor() {
             super.onMessageReceived(rtmMessage, peerId)
             Log.d(
                 "RtmClientListener",
-                rtmMessage.text + "RtmHelper.instance.rtmMsgReceiver==null?${RtmHelper.instance.rtmMsgReceiver == null}"
+                rtmMessage.text + "rtmMsgReceiver==null?${rtmMsgReceiver == null}"
             )
-            RtmHelper.instance.rtmMsgReceiver?.invoke(rtmMessage.text)
+            rtmMsgReceiver?.invoke(rtmMessage.text)
         }
     }
 
