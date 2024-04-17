@@ -37,6 +37,7 @@ class AgoraWrapperPlugin : FaceunityPlugin() {
         AgoraWrapper.init(applicationContext, rtmMsgReceiver = {
             if (this::messageChannel.isInitialized) {
                 messageChannel.send(it)
+                Log.e(TAG, "推送rtm发送消息给flutter$it")
             } else {
                 Log.e(TAG, "messageChannel 未初始化,rtmMsg = $it")
             }
