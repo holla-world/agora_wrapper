@@ -37,10 +37,15 @@ class AgoraRtmUtil:NSObject, AgoraRtmDelegate {
         })
     }
     
-    func joinRtmChannel(roomId: String) -> String {
+    func joinRtmChannel(roomId: String,callBack: @escaping (String?) -> Void)-> Void {
         channel = rtm?.createChannel(withId: roomId, delegate: self)
-        channel?.join()
-        return ""
+        channel?.join { code in
+            if code.rawValue != 0 {
+                callBack(["result":false,"error":"\(code.rawValue)"].toJSONString())
+            } else {
+                callBack(["result":true,"roomId":roomId].toJSONString())
+            }
+        }
     }
     
     func leaveRtmChannel() {

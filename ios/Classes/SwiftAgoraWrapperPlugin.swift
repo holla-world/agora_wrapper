@@ -2,16 +2,28 @@ import Flutter
 import UIKit
 import FURenderKit
 
+extension Dictionary where Key: ExpressibleByStringLiteral, Value: Any {
+    func toJSONString() -> String? {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+            return String(data: jsonData, encoding: .utf8)
+        } catch {
+            print("Error: \(error)")
+            return nil
+        }
+    }
+}
+
 public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDelegate, AgoraVideoFrameDelegate {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "agora_rtc_rawdata", binaryMessenger: registrar.messenger())
         let instance = SwiftAgoraWrapperPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
-
+    
     private var audioObserver: AgoraAudioFrameObserver?
     private var videoObserver: AgoraVideoFrameObserver?
-
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "registerAudioFrameObserver":
@@ -42,23 +54,56 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
                 videoObserver = nil
             }
             result(nil)
+        case "loginRtm":
+            if let arguments = call.arguments as? [String: Any] {
+                let appId = arguments["appId"] as? String
+                let rtmToken = arguments["rtmToken"] as? String
+                let uid = arguments["uid"] as? String
+                
+                AgoraRtmUtil.shared.loginRtm(appId: appId, rtmToken: rtmToken, uid: uid)
+            } else {
+                // 处理参数不是预期类型的情况
+            }
+            result(nil)
+        case "joinRtmChannel":
+            if let arguments = call.arguments as? [String: Any] {
+                let roomId = arguments["roomId"] as? String
+                AgoraRtmUtil.shared.joinRtmChannel(roomId: roomId ?? "") { ret in
+                    result(ret)
+                }
+            } else {
+                // 处理参数不是预期类型的情况
+                result(["result":false,"error":"arguments is error"].toJSONString())
+            }
+        case "leaveRtmChannel":
+            AgoraRtmUtil.shared.leaveRtmChannel()
+            result(nil)
+        case "sendMessageChannel":
+            if let arguments = call.arguments as? [String: Any] {
+                let message = arguments["message"] as? String
+                AgoraRtmUtil.shared.sendMessageChannel(message: message ?? "")
+                result(nil)
+            } else {
+                // 处理参数不是预期类型的情况
+                result(["result":false,"error":"arguments is error"].toJSONString())
+            }
         default:
             result(FlutterMethodNotImplemented)
         }
     }
-
+    
     public func onRecord(_: AgoraAudioFrame) -> Bool {
         return true
     }
-
+    
     public func onPlaybackAudioFrame(_: AgoraAudioFrame) -> Bool {
         return true
     }
-
+    
     public func onMixedAudioFrame(_: AgoraAudioFrame) -> Bool {
         return true
     }
-
+    
     public func onPlaybackAudioFrame(beforeMixing _: AgoraAudioFrame, uid _: UInt) -> Bool {
         return true
     }
@@ -66,10 +111,10 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
     public func getVideoFormatPreference() -> AgoraVideoFrameType {
         return .YUV420
     }
-
+    
     public func onCaptureVideoFrame(_ sourceType: Int32, frame videoFrame: AgoraVideoFrame) -> Bool {
-//        memset(videoFrame.uBuffer, 0, Int(videoFrame.uStride * videoFrame.height) / 2)
-//        memset(videoFrame.vBuffer, 0, Int(videoFrame.vStride * videoFrame.height) / 2)
+        //        memset(videoFrame.uBuffer, 0, Int(videoFrame.uStride * videoFrame.height) / 2)
+        //        memset(videoFrame.vBuffer, 0, Int(videoFrame.vStride * videoFrame.height) / 2)
         
         if(fuIsLibraryInit() > 0){
             let input = FURenderInput.init();
@@ -120,7 +165,7 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
                         FURenderKit.share().beauty?.blurType = 2;
                         FURenderKit.share().beauty?.blurUseMask = false;
                     }
-
+                    
                 }
                 FURenderKit.share().render(with: input)
             }
@@ -128,10 +173,10 @@ public class SwiftAgoraWrapperPlugin: NSObject, FlutterPlugin, AgoraAudioFrameDe
         }
         return true
     }
-
+    
     public func onRenderVideoFrame(_ videoFrame: AgoraVideoFrame, uid _: UInt) -> Bool {
-//        memset(videoFrame.uBuffer, 255, Int(videoFrame.uStride * videoFrame.height) / 2)
-//        memset(videoFrame.vBuffer, 255, Int(videoFrame.vStride * videoFrame.height) / 2)
+        //        memset(videoFrame.uBuffer, 255, Int(videoFrame.uStride * videoFrame.height) / 2)
+        //        memset(videoFrame.vBuffer, 255, Int(videoFrame.vStride * videoFrame.height) / 2)
         return true
     }
     
