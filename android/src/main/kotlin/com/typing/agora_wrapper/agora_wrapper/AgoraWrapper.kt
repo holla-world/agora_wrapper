@@ -34,9 +34,9 @@ object AgoraWrapper {
         }
 
     fun init(context: Context, rtmMsgReceiver: ((String) -> Unit)?) {
+        RtmHelper.instance.rtmMsgReceiver = rtmMsgReceiver
         if (context is Application) {
             INSTANCE = context
-            RtmHelper.instance.rtmMsgReceiver = rtmMsgReceiver
         } else {
             throw Exception("AgoraWrapper init error,context must be application")
         }

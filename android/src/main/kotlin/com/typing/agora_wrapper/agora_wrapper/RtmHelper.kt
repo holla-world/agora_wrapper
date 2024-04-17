@@ -20,13 +20,45 @@ import io.agora.rtm.jni.LOGIN_ERR_CODE
 import io.agora.rtm.jni.LOGOUT_ERR_CODE
 
 class RtmHelper private constructor() {
+
+    companion object {
+        // 懒加载单例实例
+        val instance: RtmHelper by lazy { RtmHelper() }
+    }
+
+    var rtmMsgReceiver: ((String) -> Unit)? = null
+
+    private val rtmChannelListenerAdapter: RtmChannelListenerAdapter =
+        object : RtmChannelListenerAdapter() {
+            override fun onMessageReceived(
+                rtmMessage: RtmMessage,
+                rtmChannelMember: RtmChannelMember
+            ) {
+                super.onMessageReceived(rtmMessage, rtmChannelMember)
+                gMainHandle.post {
+                    Log.d("RtmChannelListener", rtmMessage.text)
+                    rtmMsgReceiver?.invoke(rtmMessage.text)
+                }
+            }
+        }
+    private val mClientListener: RtmClientListenerAdapter = object : RtmClientListenerAdapter() {
+        override fun onMessageReceived(rtmMessage: RtmMessage, peerId: String) {
+            super.onMessageReceived(rtmMessage, peerId)
+            gMainHandle.post {
+                Log.d("RtmClientListener", rtmMessage.text)
+                rtmMsgReceiver?.invoke(rtmMessage.text)
+            }
+        }
+    }
+
+
     private val TAG = "RtmHelper"
     private var mChatManager: RtmChatManager? = null
     private var mRtmChannel: RtmChannel? = null
     private var loginRtmSuccess = false
     private var willJoinRoomId = "" //准备加入频道的信息，加入后或者退出频道， 置空
     private var tryNumWhenTimeout = 0 //超时重试次数
-    private val gMainHandle = Handler(Looper.getMainLooper())
+    val gMainHandle = Handler(Looper.getMainLooper())
     val chatManager: RtmChatManager
         get() {
             if (mChatManager == null) {
@@ -35,8 +67,6 @@ class RtmHelper private constructor() {
             }
             return mChatManager!!
         }
-
-    var rtmMsgReceiver: ((String) -> Unit)? = null
 
     fun joinRtmChannel(roomId: String, callback: ResultCallback<String>) {
         tryNumWhenTimeout = 0
@@ -230,31 +260,4 @@ class RtmHelper private constructor() {
         mRtmChannel?.sendMessage(message, callback)
     }
 
-    private object RtmHelperHolder {
-        var instance = RtmHelper()
-    }
-
-    private val rtmChannelListenerAdapter: RtmChannelListenerAdapter =
-        object : RtmChannelListenerAdapter() {
-            override fun onMessageReceived(
-                rtmMessage: RtmMessage,
-                rtmChannelMember: RtmChannelMember
-            ) {
-                super.onMessageReceived(rtmMessage, rtmChannelMember)
-                Log.d("RtmChannelListener", rtmMessage.text)
-                rtmMsgReceiver?.invoke(rtmMessage.text)
-            }
-        }
-    private val mClientListener: RtmClientListenerAdapter = object : RtmClientListenerAdapter() {
-        override fun onMessageReceived(rtmMessage: RtmMessage, peerId: String) {
-            super.onMessageReceived(rtmMessage, peerId)
-            Log.d("RtmClientListener", rtmMessage.text)
-            rtmMsgReceiver?.invoke(rtmMessage.text)
-        }
-    }
-
-    companion object {
-        val instance: RtmHelper
-            get() = RtmHelperHolder.instance
-    }
 }
