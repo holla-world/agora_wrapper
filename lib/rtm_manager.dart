@@ -17,15 +17,6 @@ class RtmManager {
   RtmManager._privateConstructor() {
     // 初始化rtc
     wrapper = AgoraWrapper();
-
-  }
-
-  static final RtmManager _instance = RtmManager._privateConstructor();
-
-  static RtmManager get instance => _instance;
-
-  void init(){
-    print('初始化rtm_receiver_channel');
     messageChannel.setMessageHandler((message) async {
       print('接收rtm消息：message=$message');
       for (var listener in _listeners) {
@@ -35,6 +26,10 @@ class RtmManager {
       return null;
     });
   }
+
+  static final RtmManager _instance = RtmManager._privateConstructor();
+
+  static RtmManager get instance => _instance;
 
   void addListener(RtmMessageListener listener) {
     if (!_listeners.contains(listener)) {
