@@ -58,7 +58,7 @@ class RtmHelper private constructor() {
     private var loginRtmSuccess = false
     private var willJoinRoomId = "" //准备加入频道的信息，加入后或者退出频道， 置空
     private var tryNumWhenTimeout = 0 //超时重试次数
-    private val gMainHandle = Handler(Looper.getMainLooper())
+    val gMainHandle = Handler(Looper.getMainLooper())
     val chatManager: RtmChatManager
         get() {
             if (mChatManager == null) {
