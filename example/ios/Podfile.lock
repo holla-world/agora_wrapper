@@ -87,7 +87,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   agora_rtc_engine: 667a7de14f35858a31b0c64cd54042a2158ef198
-  agora_wrapper: ed999c4368c9ace6d9edaf75b933d0cf39f28799
+  agora_wrapper: 9ea8c17688b2491d3ce0d7d40f57993ac3d8602b
   AgoraIrisRTC_iOS: 7e71322c06db6c29ceaf89a964fb8b2700a75001
   AgoraRtcEngine_iOS: c510de329cd905daff3f01fa4c872ea6d5eaee23
   AgoraRtm_iOS: 595a9fa33a409831e6183396ea8f8bc563918403

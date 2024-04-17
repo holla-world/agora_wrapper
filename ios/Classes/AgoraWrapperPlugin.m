@@ -1,4 +1,5 @@
 #import "AgoraWrapperPlugin.h"
+#import "FaceunityPlugin.h"
 #if __has_include(<agora_wrapper/agora_wrapper-Swift.h>)
 #import <agora_wrapper/agora_wrapper-Swift.h>
 #else
@@ -11,5 +12,6 @@
 @implementation AgoraWrapperPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
   [SwiftAgoraWrapperPlugin registerWithRegistrar:registrar];
+  [FaceunityPlugin registerWithRegistrar:registrar];
 }
 @end

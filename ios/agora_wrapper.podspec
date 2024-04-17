@@ -19,6 +19,9 @@ A new Flutter project.
   s.dependency 'AgoraRtm_iOS', '1.5.1'
   s.dependency 'FURenderKit', '8.8.1'
   s.platform = :ios, '11.0'
+  s.resource_bundles = {
+      'faceunity_plugin' => ['Assets/**/*.{png,bundle,json}']
+  }
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
